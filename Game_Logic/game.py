@@ -88,7 +88,7 @@ class Game:
         self.turn = (self.turn + 1) % 2
         self.total_turn += 1
 
-        self.game_end = ((self.total_turn == self.width * self.height) or self.game_end)
+        self.game_end = (self.board.valid_moves == [] or self.game_end)
             
         # print(self.board)
         # print('\n')
