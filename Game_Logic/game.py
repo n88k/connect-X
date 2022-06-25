@@ -1,14 +1,18 @@
 from random import randint, choice
-from tkinter import N
 
 
 class Board:
     """
     A class representing the board of the game.
 
-    Parameters:
+    Attributes:
     -----------
-    width: width
+    width: width of the board
+    height: height of the board
+    state: information about the current state of the game
+    top: list containing the y-coordinate of the checker if it is 
+    to be placed in column i
+    valid_moves: returns the index of columns which are not full
     """
     def __init__(self, width, height):
         self.width = width
