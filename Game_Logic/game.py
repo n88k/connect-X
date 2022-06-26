@@ -1,14 +1,18 @@
 from random import randint, choice
-from tkinter import N
 
 
 class Board:
     """
     A class representing the board of the game.
 
-    Parameters:
+    Attributes:
     -----------
-    width: width
+    width: width of the board
+    height: height of the board
+    state: information about the current state of the game
+    top: list containing the y-coordinate of the checker if it is 
+    to be placed in column i
+    valid_moves: returns the index of columns which are not full
     """
     def __init__(self, width, height):
         self.width = width
@@ -84,19 +88,23 @@ class Game:
         self.board.place(col, marker)
         if self.board.top[col] == self.height:
             self.board.valid_moves.remove(col)
-        self.game_end = self.check_win(i, j, marker)
+        if self.check_win(i, j, marker):
+            return self.turn % 2
+        if self.board.valid_moves == []:
+            return 'draw'
+        # self.game_end = self.check_win(i, j, marker)
         self.turn = (self.turn + 1) % 2
         self.total_turn += 1
-
-        self.game_end = (self.board.valid_moves == [] or self.game_end)
-            
-        # print(self.board)
-        # print('\n')
+        # if (not self.game_end) and self.board.valid_moves == []:
+        #     self.game_end = None
 
     def play(self):
-        while not self.game_end:
-            self.step()
-        return (self.turn - 1) % 2
+        while True:
+            out = self.step()
+            if out in {1, 0, 'draw'}:
+                # print(self.board)
+                return out
+            
 
 
 class Player:
@@ -112,9 +120,9 @@ class RandomPlayer(Player):
 class DefaultGame(Game):
     def __init__(self):
         super().__init__(6, 7, 4, (RandomPlayer(), RandomPlayer()))
-
-d = DefaultGame()
-d.play()
+# for i in range(1000):
+#     d = DefaultGame()
+    # d.play()    
 
 def getBoard(s):
     return [row[1:-1].split('|') for row in s.split('\n')]
