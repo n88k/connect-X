@@ -1,4 +1,5 @@
-from Game_Logic.game import Game, RandomPlayer
+from Game_Logic.game import Game, Board
+from players import *
 import matplotlib.pyplot as plt
 import numpy as np
 

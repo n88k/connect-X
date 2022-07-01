@@ -105,35 +105,26 @@ class Game:
         if show:
             while True:
                 print(self.board)
+                print('\n')
                 sleep(delay)
                 out = self.step()
                 if out in {1, 0, 'draw'}:
                     print(self.board)
+                    print('\n')
                     return out
         while True:
             out = self.step()
             if out in {1, 0, 'draw'}:
                 # print(self.board)
                 return out
-            
 
 
-class Player:
-    def __call__(self, board):
-        pass
-
-
-class RandomPlayer(Player):
-    def __call__(self, board:Board):
-        return choice(board.valid_moves)
 
 
 class DefaultGame(Game):
     def __init__(self):
         super().__init__(6, 7, 4, (RandomPlayer(), RandomPlayer()))
-# for i in range(1000):
-#     d = DefaultGame()
-    # d.play()    
+
 
 def getBoard(s):
     return [row[1:-1].split('|') for row in s.split('\n')]
