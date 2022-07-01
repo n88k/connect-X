@@ -1,4 +1,5 @@
 from random import randint, choice
+from time import sleep
 
 
 class Board:
@@ -50,17 +51,20 @@ class Game:
         self.game_end = False
         self.total_turn = 0
 
-    def check_win(self, i, j, marker):
+    def consecutive_count(self, i, j, marker):
         """
-        Checks whether the piece at self.board[i][j] is a winning piece.
+        Finds the hightest number of pieces connected to board[i, j]
         """
         horizontal = lambda i, j, step: (i + step, j)
         vertical = lambda i, j, step: (i, j + step)
-        diagonal = lambda i, j, step: (i + step, j + step)
+        diagonal_NE = lambda i, j, step: (i + step, j + step)
+        diagonal_NW = lambda i, j, step: (i - step, j + step)
         steps_counts = ((i, self.width - i - 1), (j, self.height - j - 1),
-                        (min(i, j), min(self.width - i - 1, self.height - j - 1)))
-
-        for direction, (neg_lim, pos_lim) in zip((horizontal, vertical, diagonal), steps_counts):
+                        (min(i, j), min(self.width - i - 1, self.height - j - 1)),
+                        (min(self.width - i - 1, j), min(i, self.height - j - 1)))
+        max_count = 1
+        for direction, (neg_lim, pos_lim) in zip((horizontal, vertical, 
+                        diagonal_NE, diagonal_NW), steps_counts):
             temp = 1
             for step in range(1, pos_lim + 1):
                 a, b = direction(i, j, step)
@@ -77,9 +81,8 @@ class Game:
                 else:
                     # print(a, b, self.board[a, b])
                     break
-            if temp >= self.x:
-                return True
-        return False
+            max_count = max(max_count, temp)
+        return max_count
 
     def step(self):
         cur_player = self.players[self.turn]
@@ -88,7 +91,7 @@ class Game:
         self.board.place(col, marker)
         if self.board.top[col] == self.height:
             self.board.valid_moves.remove(col)
-        if self.check_win(i, j, marker):
+        if self.consecutive_count(i, j, marker) >= self.x:
             return self.turn % 2
         if self.board.valid_moves == []:
             return 'draw'
@@ -98,7 +101,15 @@ class Game:
         # if (not self.game_end) and self.board.valid_moves == []:
         #     self.game_end = None
 
-    def play(self):
+    def play(self, show = False, delay = 0.5):
+        if show:
+            while True:
+                print(self.board)
+                sleep(delay)
+                out = self.step()
+                if out in {1, 0, 'draw'}:
+                    print(self.board)
+                    return out
         while True:
             out = self.step()
             if out in {1, 0, 'draw'}:
